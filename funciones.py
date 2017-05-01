@@ -48,10 +48,12 @@ class funciones():
             self.txtNIT.SetValue(NIT)
 
     #Funcion que nos permite registrar un nuevo empleado
-    def guardar_empleado(self):
+    def insert(self):
         # Optenemos el id que ingresaremos
+        self.conexion = sqlite3.connect("datos_empleados.db")
+        #print "Conexion establecida con exito "
         id = self.id_auto_increment("datos_empleados.db", "empleado", "id")
-        print "id del registro " + str(id)
+        #print "id del registro " + str(id)
         # Capturamos lo valores de los txt
         nombre = str(self.txtNombre.GetValue())
         edad = str(self.txtEdad.GetValue())
@@ -63,6 +65,8 @@ class funciones():
         c=self.conexion.cursor()
         c.execute("INSERT INTO empleado VALUES (?,?,?,?,?,?,?)",(id,dui,nombre,edad,direccion,nit,salario))
         self.conexion.commit()
+        self.conexion.close()
+        #print "Conexion cerrada"
 
         #Limpiamos TextCtrl para realizar un nuevo registro
         self.txtNombre.SetValue("")
@@ -88,11 +92,70 @@ class funciones():
         #     dialogo2.Destroy()
         #     self.Close()
 
-    #Optiene los datos de un empleado para editar sus datos
-    def cargar_por_id(self, id):
+    def update(self, id):
+        self.conexion = sqlite3.connect("datos_empleados.db")
+        print "Conexion establecida con exito "
+        c = self.conexion.cursor()
+        nombre = str(self.txtNombre.GetValue())
+        edad = str(self.txtEdad.GetValue())
+        direccion = str(self.txtDirecion.GetValue())
+        dui = str(self.txtDUI.GetValue())
+        nit = str(self.txtNIT.GetValue())
+        salario = str(self.txtSalario.GetValue())
+        c.execute("UPDATE empleado SET dui='"+dui+"', nombre='"+nombre+"', edad='"+edad+"', direccion='"+direccion+"', nit='"+nit+"', salario='"+salario+"' WHERE id = '"+id+"'")
+        self.conexion.commit()
+        self.conexion.close()
+
+        #Generamos un cuadro de dialogo que indique los cambios
+        dialogo=wx.MessageDialog(None, 'Datos guardados correctamente', 'Editar empleado', wx.OK | wx.ICON_INFORMATION)
+        respuesta = dialogo.ShowModal()
+        dialogo.Destroy()
+
+    def delete(self, id):
+        if id == '':
+            dialogo=wx.MessageDialog(None, 'Seleccione un empleado', 'Eliminar empleado', wx.OK | wx.ICON_INFORMATION)
+            respuesta = dialogo.ShowModal()
+            dialogo.Destroy()
+        else:
+            dialogo=wx.MessageDialog(None, 'Decea eliminar este empleado?', 'Eliminar empleado', wx.YES_NO | wx.ICON_INFORMATION)
+            respuesta = dialogo.ShowModal()
+            if respuesta == wx.ID_YES:
+                dialogo.Destroy()
+                c = self.conexion.cursor()
+                c.execute("DELETE FROM empleado WHERE id = '"+id+"'")
+                self.conexion.commit()
+                # Guardamos el valor de la busqueda actual
+                busqueda = str(self.txtBuscar.GetValue())
+                self.txtBuscar.SetValue(busqueda) #Actualizamos la busqueda
+                #Generamos un cuadro de dialogo que indique los cambios
+                dialogo=wx.MessageDialog(None, 'Se a eliminado el registro', 'Eliminar empleado', wx.OK | wx.ICON_INFORMATION)
+                respuesta = dialogo.ShowModal()
+                dialogo.Destroy()
+            else:
+                dialogo.Destroy()
+
+    #Funcion para mostrar los datos del usuario en el formulario "Ver"
+    def select(self, id):
+        self.conexion = sqlite3.connect("datos_empleados.db")
         c = self.conexion.cursor()
         c.execute("SELECT * FROM empleado WHERE id = '"+id+"'")
         resultado = c.fetchone()
+        self.conexion.close()
+
+        self.lblNombre.SetLabel(resultado[2])
+        self.lblEdad.SetLabel(str(resultado[3]))
+        self.lblDireccion.SetLabel(str(resultado[4]))
+        self.lblDui.SetLabel(str(resultado[1]))
+        self.lblNit.SetLabel(str(resultado[5]))
+        self.lblSalario.SetLabel(str(resultado[6]))
+
+    #Optiene los datos de un empleado en la ventana editar
+    def cargar_por_id(self, id):
+        self.conexion = sqlite3.connect("datos_empleados.db")
+        c = self.conexion.cursor()
+        c.execute("SELECT * FROM empleado WHERE id = '"+id+"'")
+        resultado = c.fetchone()
+        self.conexion.close()
         self.txtNombre.SetValue(resultado[2])
         self.txtEdad.SetValue(str(resultado[3]))
         self.txtDirecion.SetValue(str(resultado[4]))
@@ -100,7 +163,7 @@ class funciones():
         self.txtNIT.SetValue(str(resultado[5]))
         self.txtSalario.SetValue(str(resultado[6]))
 
-    # Funcion para cargar los empleados desde la base de datos
+    # Funcion para cargar los empleados desde la base de datos en la ventana principal
     def cargar(self):
 
         self.ListCtrl.DeleteAllItems()
@@ -130,54 +193,3 @@ class funciones():
             self.ListCtrl.SetStringItem(rows,4, str(empleado[1]))
             self.ListCtrl.SetStringItem(rows,5, str(empleado[5]))
             self.ListCtrl.SetStringItem(rows,6, str(empleado[6]))
-
-    def update(self, id):
-        c = self.conexion.cursor()
-        nombre = str(self.txtNombre.GetValue())
-        edad = str(self.txtEdad.GetValue())
-        direccion = str(self.txtDirecion.GetValue())
-        dui = str(self.txtDUI.GetValue())
-        nit = str(self.txtNIT.GetValue())
-        salario = str(self.txtSalario.GetValue())
-        c.execute("UPDATE empleado SET dui='"+dui+"', nombre='"+nombre+"', edad='"+edad+"', direccion='"+direccion+"', nit='"+nit+"', salario='"+salario+"' WHERE id = '"+id+"'")
-        self.conexion.commit()
-
-        #Generamos un cuadro de dialogo que indique los cambios
-        dialogo=wx.MessageDialog(None, 'Datos guardados correctamente', 'Editar empleado', wx.OK | wx.ICON_INFORMATION)
-        respuesta = dialogo.ShowModal()
-        dialogo.Destroy()
-
-    def delete(self, id):
-        if id == '':
-            dialogo=wx.MessageDialog(None, 'Seleccione un empleado', 'Eliminar empleado', wx.OK | wx.ICON_INFORMATION)
-            respuesta = dialogo.ShowModal()
-            dialogo.Destroy()
-        else:
-            dialogo=wx.MessageDialog(None, 'Decea eliminar este empleado?', 'Eliminar empleado', wx.YES_NO | wx.ICON_INFORMATION)
-            respuesta = dialogo.ShowModal()
-            if respuesta == wx.ID_YES:
-                dialogo.Destroy()
-                c = self.conexion.cursor()
-                c.execute("DELETE FROM empleado WHERE id = '"+id+"'")
-                self.conexion.commit()
-                # Guardamos el valor de la busqueda actual
-                busqueda = str(self.txtBuscar.GetValue())
-                self.txtBuscar.SetValue(busqueda) #Actualizamos la busqueda
-                #Generamos un cuadro de dialogo que indique los cambios
-                dialogo=wx.MessageDialog(None, 'Se a eliminado el registro', 'Eliminar empleado', wx.OK | wx.ICON_INFORMATION)
-                respuesta = dialogo.ShowModal()
-                dialogo.Destroy()
-            else:
-                dialogo.Destroy()
-    #Funcion para mostrar los datos del usuario en el formulario "Ver"
-    def select(self, id):
-        c = self.conexion.cursor()
-        c.execute("SELECT * FROM empleado WHERE id = '"+id+"'")
-        resultado = c.fetchone()
-
-        self.lblNombre.SetLabel(resultado[2])
-        self.lblEdad.SetLabel(str(resultado[3]))
-        self.lblDireccion.SetLabel(str(resultado[4]))
-        self.lblDui.SetLabel(str(resultado[1]))
-        self.lblNit.SetLabel(str(resultado[5]))
-        self.lblSalario.SetLabel(str(resultado[6]))

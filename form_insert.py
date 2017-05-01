@@ -136,6 +136,7 @@ class MyFrame1 ( wx.Frame ):
 		self.Centre( wx.BOTH )
 
 		# Connect Events
+		self.Bind( wx.EVT_CLOSE, self.Cerrar )
 		self.txtNombre.Bind( wx.EVT_TEXT, self.Limpiar )
 		self.txtDUI.Bind( wx.EVT_TEXT, self.Mascara_DUI )
 		self.txtNIT.Bind( wx.EVT_TEXT, self.Mascara_NIT )
@@ -146,6 +147,9 @@ class MyFrame1 ( wx.Frame ):
 
 
 	# Virtual event handlers, overide them in your derived class
+	def Cerrar( self, event ):
+		event.Skip()
+
 	def Limpiar( self, event ):
 		event.Skip()
 

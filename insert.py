@@ -14,13 +14,11 @@ class MyFrame1(form_insert.MyFrame1, funciones.funciones):
     def __init__(self,parent):
 		#inicializa la clase superior(parent)
         form_insert.MyFrame1.__init__(self,parent)
-        self.conexion = sqlite3.connect("datos_empleados.db")
-        print "Conexion establecida con exito "
         self.padre = parent
 
         #Evento click
     def guardar( self, event ):
-        self.guardar_empleado()
+        self.insert()
 
         #Enciamos una busqueda vacia para que se actualize el formulario padre
         self.padre.txtBuscar.SetValue("")

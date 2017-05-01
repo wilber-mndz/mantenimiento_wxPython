@@ -11,8 +11,6 @@ class MyFrame1(form_select.MyFrame1, funciones.funciones):
     def __init__(self, parent):
 		#inicializa la clase superior(parent)
         form_select.MyFrame1.__init__(self,parent)
-        self.conexion = sqlite3.connect("datos_empleados.db")
-        print "Conexion establecida con exito "
         self.padre = parent
         self.id = self.padre.ListCtrl.GetItemText(self.padre.ListCtrl.GetFocusedItem())
         self.select(self.id)

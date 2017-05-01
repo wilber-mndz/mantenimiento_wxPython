@@ -76,6 +76,10 @@ class principal(form_main.frmPrincipal, funciones.funciones):
             self.formSelect = ver.MyFrame1(self)
             self.formSelect.Show()
 
+    def Cerrar(self, event):
+        self.conexion.close()
+        print "se cerro la conexion"
+        self.Destroy()
 
 #Instanciamos el formulario Principal
 class MyApp(wx.App):
