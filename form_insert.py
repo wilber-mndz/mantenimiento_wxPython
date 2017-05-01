@@ -138,8 +138,10 @@ class MyFrame1 ( wx.Frame ):
 		# Connect Events
 		self.Bind( wx.EVT_CLOSE, self.Cerrar )
 		self.txtNombre.Bind( wx.EVT_TEXT, self.Limpiar )
+		self.txtEdad.Bind( wx.EVT_TEXT, self.Validar_edad )
 		self.txtDUI.Bind( wx.EVT_TEXT, self.Mascara_DUI )
 		self.txtNIT.Bind( wx.EVT_TEXT, self.Mascara_NIT )
+		self.txtSalario.Bind( wx.EVT_TEXT, self.Validar_salario )
 		self.btnGuardar.Bind( wx.EVT_BUTTON, self.guardar )
 
 	def __del__( self ):
@@ -153,10 +155,16 @@ class MyFrame1 ( wx.Frame ):
 	def Limpiar( self, event ):
 		event.Skip()
 
+	def Validar_edad( self, event ):
+		event.Skip()
+
 	def Mascara_DUI( self, event ):
 		event.Skip()
 
 	def Mascara_NIT( self, event ):
+		event.Skip()
+
+	def Validar_salario( self, event ):
 		event.Skip()
 
 	def guardar( self, event ):

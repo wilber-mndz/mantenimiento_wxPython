@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 import sqlite3
 import wx
 import wx.xrc
@@ -20,32 +22,6 @@ class funciones():
         else:
             # Si no hay registros el primer id es 1
             return 1
-
-    #Nos permite validar el campo dui y darle el formato #######-#
-    def validar_dui(self):
-        #Funcion para validar y agragar mascara al campo DUI
-        DUI = str(self.txtDUI.GetValue())
-        #Cuando hayamos ingresado los 9 digitos del dui agregamos el "-"
-        if int(len(DUI)) == 9 and DUI[7]!="-" and DUI[8]!="-":
-            DUI = DUI[0:8] + "-" + DUI[8:9]  # agregamos el "-"
-            self.txtDUI.SetValue(DUI)  # Enviamos el valor al txtDUI
-            self.txtNIT.SetFocus()  #Mandamos el focus al siguiente txt
-
-    #Nos permite validar el campo de nit y darle formato ####-######-###-#
-    def validar_nit(self):
-        NIT = str(self.txtNIT.GetValue())
-
-        # Si el usuaio quiere corregir el dato quitamos los "-" que agregamos
-        if int(len(NIT)) !=17:
-            NIT = (str(NIT)).replace("-","") #Eliminamos los "-"
-            #print NIT
-
-        if int(len(NIT)) == 14 and NIT[4]!="-" and NIT[13]!="-" and NIT[12]!="-":
-            NIT = NIT[0:4] + "-" + NIT[4:10] + "-" + NIT[10:13] + "-" + NIT[13:14]
-            self.txtSalario.SetFocus()
-
-        if str(NIT) != str(self.txtNIT.GetValue()):
-            self.txtNIT.SetValue(NIT)
 
     #Funcion que nos permite registrar un nuevo empleado
     def insert(self):
@@ -81,16 +57,6 @@ class funciones():
         dialogo=wx.MessageDialog(None, 'Datos guardados correctamente\n Id: '+str(id)+'', 'Guardar empleado', wx.OK | wx.ICON_INFORMATION)
         respuesta = dialogo.ShowModal()
         dialogo.Destroy()
-
-        #Pregunta si decea registrar otro empleado si no se haran mas registros cerrar formulario
-        #Deshabilitado porque envia el formulario de registro al fondo
-        # dialogo2=wx.MessageDialog(None, 'Decea registrar otro empleado?', 'Guardar empleado', wx.YES_NO | wx.ICON_INFORMATION)
-        # otro = dialogo2.ShowModal()
-        # if otro == wx.ID_YES:
-        #     dialogo2.Destroy()
-        # else:
-        #     dialogo2.Destroy()
-        #     self.Close()
 
     def update(self, id):
         self.conexion = sqlite3.connect("datos_empleados.db")
