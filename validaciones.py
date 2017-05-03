@@ -1,6 +1,9 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Agrega soporte para caracteres unicode
+from __future__ import unicode_literals
+
 class validaciones():
 
     #--------Funcion que se asegura de que el usuario solo ingrese valores entre 0 y 99
@@ -75,9 +78,9 @@ class validaciones():
             self.txtNIT.SetValue(NIT)
 
     def comprobar_campos(self):
-        a = str(self.txtNombre.GetValue())
+        a = unicode(self.txtNombre.GetValue())
         b = str(self.txtEdad.GetValue())
-        c = str(self.txtDirecion.GetValue())
+        c = unicode(self.txtDirecion.GetValue())
         d = str(self.txtDUI.GetValue())
         e = str(self.txtNIT.GetValue())
         f = str(self.txtSalario.GetValue())

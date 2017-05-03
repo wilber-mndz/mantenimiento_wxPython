@@ -1,5 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
+
+# Agrega soporte para caracteres unicode
+from __future__ import unicode_literals
 import sqlite3
 import wx
 import wx.xrc

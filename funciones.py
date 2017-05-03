@@ -1,5 +1,9 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
+
+# Agrega soporte para caracteres unicode
+from __future__ import unicode_literals
+
 import sqlite3
 import wx
 import wx.xrc
@@ -31,9 +35,9 @@ class funciones():
         id = self.id_auto_increment("datos_empleados.db", "empleado", "id")
         #print "id del registro " + str(id)
         # Capturamos lo valores de los txt
-        nombre = str(self.txtNombre.GetValue())
+        nombre = unicode(self.txtNombre.GetValue())
         edad = str(self.txtEdad.GetValue())
-        direccion = str(self.txtDirecion.GetValue())
+        direccion = unicode(self.txtDirecion.GetValue())
         dui = str(self.txtDUI.GetValue())
         nit = str(self.txtNIT.GetValue())
         salario = str(self.txtSalario.GetValue())
@@ -62,9 +66,9 @@ class funciones():
         self.conexion = sqlite3.connect("datos_empleados.db")
         print "Conexion establecida con exito "
         c = self.conexion.cursor()
-        nombre = str(self.txtNombre.GetValue())
+        nombre = unicode(self.txtNombre.GetValue())
         edad = str(self.txtEdad.GetValue())
-        direccion = str(self.txtDirecion.GetValue())
+        direccion = unicode(self.txtDirecion.GetValue())
         dui = str(self.txtDUI.GetValue())
         nit = str(self.txtNIT.GetValue())
         salario = str(self.txtSalario.GetValue())
@@ -108,9 +112,9 @@ class funciones():
         resultado = c.fetchone()
         self.conexion.close()
 
-        self.lblNombre.SetLabel(resultado[2])
+        self.lblNombre.SetLabel(unicode(resultado[2]))
         self.lblEdad.SetLabel(str(resultado[3]))
-        self.lblDireccion.SetLabel(str(resultado[4]))
+        self.lblDireccion.SetLabel(unicode(resultado[4]))
         self.lblDui.SetLabel(str(resultado[1]))
         self.lblNit.SetLabel(str(resultado[5]))
         self.lblSalario.SetLabel(str(resultado[6]))
@@ -122,9 +126,9 @@ class funciones():
         c.execute("SELECT * FROM empleado WHERE id = '"+id+"'")
         resultado = c.fetchone()
         self.conexion.close()
-        self.txtNombre.SetValue(resultado[2])
+        self.txtNombre.SetValue(unicode(resultado[2]))
         self.txtEdad.SetValue(str(resultado[3]))
-        self.txtDirecion.SetValue(str(resultado[4]))
+        self.txtDirecion.SetValue(unicode(resultado[4]))
         self.txtDUI.SetValue(str(resultado[1]))
         self.txtNIT.SetValue(str(resultado[5]))
         self.txtSalario.SetValue(str(resultado[6]))
@@ -138,7 +142,7 @@ class funciones():
 
         # Si el usuario escribio una busqueda
         if busqueda!="":
-            self.c.execute("SELECT * FROM empleado WHERE nombre like '%"+str(busqueda)+"%' ORDER BY id DESC")
+            self.c.execute("SELECT * FROM empleado WHERE nombre like '%"+unicode(busqueda)+"%' ORDER BY id DESC")
             resultado= self.c.fetchall()
             #print resultado
         else: # Si la busqueda esta vacia traemos todos los registros
@@ -153,8 +157,8 @@ class funciones():
             # Insertamos nustra fila con el primer elemento en el indice 0
             self.ListCtrl.InsertStringItem(rows, str(empleado[0]))
             # insertamos nuestro elemento en la columna siguiente (fila, columna, str)
-            self.ListCtrl.SetStringItem(rows,1, str(empleado[2]))
-            self.ListCtrl.SetStringItem(rows,2, str(empleado[4]))
+            self.ListCtrl.SetStringItem(rows,1, unicode(empleado[2]))
+            self.ListCtrl.SetStringItem(rows,2, unicode(empleado[4]))
             self.ListCtrl.SetStringItem(rows,3, str(empleado[3]))
             self.ListCtrl.SetStringItem(rows,4, str(empleado[1]))
             self.ListCtrl.SetStringItem(rows,5, str(empleado[5]))
